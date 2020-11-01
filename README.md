@@ -3,6 +3,8 @@ gtk_ohp_app
 
 Transparent window
 
+![](doc/sample.png)
+
 Prepare
 -------
 
