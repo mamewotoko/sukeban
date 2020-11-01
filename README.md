@@ -1,5 +1,7 @@
-GTK quickstart (WIP)
+gtk_ohp_app
 ====================
+
+Transparent window
 
 Prepare
 -------
@@ -26,5 +28,5 @@ Run
 ```
 
 ----
-Takashi Masuyama < mamewotoko@gmail.com >  
+Takashi Masuyama < mamewotoko@gmail.com >
 http://mamewo.ddo.jp/

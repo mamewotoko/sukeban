@@ -2,19 +2,23 @@
 CC = gcc
 SRC_DIR = src
 OBJ_DIR = target
-CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall
+CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -I include
 LDFLAGS = $(shell pkg-config --libs gtk+-3.0)
 EXE = mini
 
-SRCS = $(SRC_DIR)/mini.c
+SRCS = include/img.h $(SRC_DIR)/mini.c
 OBJS = $(OBJ_DIR)/mini.o
 
 all: $(EXE)
 
+include/img.h: image/suke_icon_500.png
+	mkdir -p include
+	gdk-pixbuf-csource --raw --name=suke_icon $< > $@
+
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(EXE): $(OBJS)
+$(EXE): include/img.h $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(EXE)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
@@ -24,6 +28,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	rm -rf $(EXE) $(OBJ_DIR)
+	rm -rf $(EXE) $(OBJ_DIR) include/img.h
 
 .PHONY: all clean
