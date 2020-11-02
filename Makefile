@@ -15,6 +15,9 @@ include/img.h: image/suke_icon_500.png
 	mkdir -p include
 	gdk-pixbuf-csource --raw --name=suke_icon $< > $@
 
+TAGS:
+	find $(shell pkg-config --cflags-only-I gtk+-3.0 | sed s/-I//g) -name "*.h" | xargs etags
+
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 

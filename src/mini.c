@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 #include "img.h"
-#include <stdio.h>
 
 extern const guint8 suke_icon[];
 
