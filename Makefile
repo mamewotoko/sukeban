@@ -1,12 +1,13 @@
 
 CC = gcc
+CPP = g++
 SRC_DIR = src
 OBJ_DIR = target
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -I include
 LDFLAGS = $(shell pkg-config --libs gtk+-3.0)
 EXE = mini
 
-SRCS = include/img.h $(SRC_DIR)/mini.c
+SRCS = include/img.h $(SRC_DIR)/mini.cpp
 OBJS = $(OBJ_DIR)/mini.o
 
 all: $(EXE)
@@ -19,13 +20,13 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(EXE): include/img.h $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $(EXE)
+	$(CPP) $(OBJS) $(LDFLAGS) -o $(EXE)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@if [ ! -d $(OBJ_DIR) ]; \
 		then mkdir -p $(OBJ_DIR); \
 	fi
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CPP) -c $(CFLAGS) $< -o $@
 
 clean:
 	rm -rf $(EXE) $(OBJ_DIR) include/img.h
