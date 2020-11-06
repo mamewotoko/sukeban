@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
+//TODO: save as c file
 #include "img.h"
-
-extern const guint8 suke_icon[];
 
 GtkWidget* transparent_window_new(){
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
