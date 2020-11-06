@@ -14,7 +14,10 @@ all: $(EXE)
 
 include/img.h: image/suke_icon_500.png
 	mkdir -p include
-	gdk-pixbuf-csource --raw --name=suke_icon $< > $@
+	gdk-pixbuf-csource --raw --name=suke_icon --static $< > $@
+
+TAGS:
+	find $(shell pkg-config --cflags-only-I gtk+-3.0 | sed s/-I//g) -name "*.h" | xargs etags
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
@@ -29,6 +32,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CPP) -c $(CFLAGS) $< -o $@
 
 clean:
-	rm -rf $(EXE) $(OBJ_DIR) include/img.h
+	rm -rf $(EXE) $(OBJ_DIR) include/img.h TAGS
 
 .PHONY: all clean
