@@ -8,6 +8,12 @@ Transparent window
 Prepare
 -------
 
+clone this source
+
+```
+git clone --recursive https://github.com/mamewotoko/gtk_ohp_app.git
+```
+
 install GTK
 
 ```

@@ -1,0 +1,3 @@
+[submodule "include/cmdline"]
+	path = include/cmdline
+	url = https://github.com/tanakh/cmdline.git
