@@ -1,6 +1,6 @@
 
 CC = gcc
-CPP = g++
+CPP = g++ -Wno-deprecated -g
 SRC_DIR = src
 OBJ_DIR = target
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -I include

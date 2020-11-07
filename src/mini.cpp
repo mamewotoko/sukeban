@@ -2,6 +2,7 @@
 #include "img.h"
 #include <iostream>
 #include <list>
+#include <map>
 #include <cmdline/cmdline.h>
 
 using namespace std;
@@ -24,8 +25,9 @@ public:
 
 class line_t {
 public:
-    line_t(int width){
+    line_t(int width, GdkRGBA* color){
         this->width = width;
+        this->color = *color;
     }
     ~line_t(){
         while(0 < data.size()){
@@ -36,19 +38,80 @@ public:
     }
     list<point_t*> data;
     int width;
+    GdkRGBA color;
+};
+
+class color_pallet_t {
+public:
+    color_pallet_t(){
+        const char* colors[][2] = {
+            { "red", "#FF0000" },
+            { "navy", "#00008D" },
+            { "green", "#00FF00" },
+            { "black", "#000000" },
+            { "pink", "#FF1493" },
+            { "yellow", "#FFFF00" },
+            { "murasaki", "#800080" },
+            { "white", "#FFFFFF" },
+            { "aqua", "#00FFFF" },
+            { "orange", "#FFA500" },
+            { "blue", "#0000FF" },
+            { "gray", "#808080" },
+            { "purple", "#800080" },
+            { "fuchsia", "#FF00FF" }
+        };
+        int size = sizeof(colors)/sizeof(colors[0]);
+
+        for(int i = 0; i < size; i++){
+            const char* name = colors[i][0];
+            const char* color_str = colors[i][1];
+            GdkRGBA* c = new GdkRGBA;
+            gdk_rgba_parse(c, color_str);
+            data[name] = c;
+        }
+
+        // GdkRGBA* c = new GdkRGBA;
+        // //TODO: error check
+        // gdk_rgba_parse(c, "#FF0000");
+        // data["red"] = c;
+        // //TODO: error check
+        // c = new GdkRGBA;
+        // gdk_rgba_parse(c, "#00008D");
+        // data["navy"] = c;
+        // //TODO: error check
+        // c = new GdkRGBA;
+        // gdk_rgba_parse(c, "#00FF00");
+        // data["green"] = c;
+    }
+
+    ~color_pallet_t(){
+        //TODO: iterate keys
+        delete data["red"];
+        delete data["navy"];
+        delete data["green"];
+    }
+    map<string, GdkRGBA*> data;
 };
 
 class app_context_t {
 public:
     app_context_t(bool is_transparent,
-                  int line_width)
+                  int line_width,
+                  bool is_demo)
     {
         this->is_transparent = is_transparent;
         this->line_width = line_width;
-        current_line = new line_t(this->line_width);
+        this->is_demo = is_demo;
 
+        if(this->is_demo){
+            this->icon = gdk_pixbuf_new_from_inline(-1, suke_icon, FALSE, NULL);
+        }
+        current_line = NULL;
+        line_color_name = "green";
         this->is_pressing = false;
+        this->pallet = new color_pallet_t();
     }
+
     ~app_context_t(){
         while(0 < shapes.size()){
             line_t* line = shapes.front();
@@ -57,30 +120,43 @@ public:
         }
         delete current_line;
         current_line = NULL;
+        g_object_unref(this->icon);
+        this->icon = NULL;
     }
+
+    GdkRGBA* get_line_color(){
+        map<string, GdkRGBA*>::iterator iter = this->pallet->data.find(this->line_color_name);
+        if(iter == this->pallet->data.end()){
+            //default
+            iter = this->pallet->data.find("green");
+        }
+        return iter->second;
+    }
+
     list<line_t*> shapes;
     line_t* current_line;
     bool is_pressing;
     bool is_transparent;
+    bool is_demo;
+    GdkPixbuf* icon;
     int line_width;
+    string line_color_name;
+    color_pallet_t* pallet;
 };
 
 app_context_t* app_context;
 
 void draw_line(cairo_t* cairo, line_t* line){
     list<point_t*>::iterator iter = line->data.begin();
-    GdkRGBA color;
-    color.red = 0.0;
-    color.green = 0.0;
-    color.blue = 0.0;
-    color.alpha = 1.0;
+
+    GdkRGBA* color = &line->color;
     point_t* first_point = *iter;
 
     if(line->data.empty()){
         return;
     }
     //TODO; handle empty line
-    gdk_cairo_set_source_rgba(cairo, &color);
+    gdk_cairo_set_source_rgba(cairo, color);
     cairo_set_line_width(cairo, line->width);
     cairo_move_to(cairo, first_point->x, first_point->y);
     ++iter;
@@ -97,6 +173,8 @@ void on_button_press(GtkWidget* widget, GdkEventButton* event){
         return;
     }
     app_context->is_pressing = true;
+    GdkRGBA* color = app_context->get_line_color();
+    app_context->current_line = new line_t(app_context->line_width, color);
     app_context->current_line->data.push_back(new point_t(event->x, event->y));
 }
 
@@ -107,7 +185,7 @@ void on_button_release(GtkWidget* widget, GdkEventButton* event){
     }
     app_context->current_line->data.push_back(new point_t(event->x, event->y));
     app_context->shapes.push_back(app_context->current_line);
-    app_context->current_line = new line_t(app_context->line_width);
+    app_context->current_line = NULL;
     gtk_widget_queue_draw(widget);
     app_context->is_pressing = false;
 }
@@ -134,14 +212,60 @@ void on_draw(GtkWidget* widget, cairo_t* cairo, gpointer data){
         cairo_rectangle(cairo, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         cairo_fill(cairo);
     }
-
+    if(app_context->is_demo){
+        gdk_cairo_set_source_pixbuf(cairo,
+                                    app_context->icon,
+                                    (WINDOW_WIDTH - gdk_pixbuf_get_width(app_context->icon))/2,
+                                    (WINDOW_HEIGHT - gdk_pixbuf_get_height(app_context->icon))/2);
+        cairo_paint(cairo);
+    }
     for(list<line_t*>::iterator iter = app_context->shapes.begin();
         iter != app_context->shapes.end();
         ++iter){
         line_t* line = *iter;
         draw_line(cairo, line);
     }
-    draw_line(cairo, app_context->current_line);
+    if(app_context->current_line != NULL){
+        draw_line(cairo, app_context->current_line);
+    }
+}
+
+void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
+    switch(event->keyval){
+    case GDK_KEY_G:
+        app_context->line_color_name = "green";
+        break;
+    case GDK_KEY_N:
+        app_context->line_color_name = "navy";
+        break;
+    case GDK_KEY_R:
+        app_context->line_color_name = "red";
+        break;
+    case GDK_KEY_B:
+        app_context->line_color_name = "black";
+        break;
+    case GDK_KEY_Y:
+        app_context->line_color_name = "yellow";
+        break;
+    case GDK_KEY_M:
+        app_context->line_color_name = "murasaki";
+        break;
+    case GDK_KEY_W:
+        app_context->line_color_name = "white";
+        break;
+    case GDK_KEY_A:
+        app_context->line_color_name = "aqua";
+        break;
+    case GDK_KEY_O:
+        app_context->line_color_name = "orange";
+        break;
+    case GDK_KEY_P:
+        app_context->line_color_name = "pink";
+        break;
+    default:
+        break;
+    }
+    //cout << app_context->line_color_name << endl;
 }
 
 GtkWidget* transparent_window_new(){
@@ -152,13 +276,9 @@ GtkWidget* transparent_window_new(){
     gtk_widget_set_app_paintable(window, TRUE);
     gtk_widget_set_size_request(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    /* GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file("suke_icon_500.png", NULL); */
-    /* GdkPixbuf* pixbuf = gdk_pixbuf_new_from_inline(-1, suke_icon, FALSE, NULL); */
-    /* GtkWidget* image = gtk_image_new_from_pixbuf(pixbuf); */
-    /* gtk_container_add(GTK_CONTAINER(window), image); */
-
     GtkWidget* area = gtk_drawing_area_new();
     gtk_widget_set_events(area, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_BUTTON1_MOTION_MASK);
+    g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(on_key_press), NULL);
     g_signal_connect(G_OBJECT(area), "draw", G_CALLBACK(on_draw), NULL);
     g_signal_connect(G_OBJECT(area), "button_press_event", G_CALLBACK(on_button_press), NULL);
     g_signal_connect(G_OBJECT(area), "button_release_event", G_CALLBACK(on_button_release), NULL);
@@ -174,9 +294,11 @@ int main(int argc, char **argv)
 
     a.add("opaque", 'o', "opaque mode");
     a.add<int>("line_width", 'w', "line width mode", false, 4);
+    a.add("demo", '\0', "draw icon");
     a.parse_check(argc, argv);
     app_context = new app_context_t(!a.exist("opaque"),
-                                    a.get<int>("line_width"));
+                                    a.get<int>("line_width"),
+                                    a.exist("demo"));
     gtk_init(&argc, &argv);
 
     GtkWidget *window = transparent_window_new();
