@@ -176,7 +176,7 @@ void on_button_release(GtkWidget* widget, GdkEventButton* event){
     app_context->current_line->data.push_back(new point_t(event->x, event->y));
     app_context->shapes.push_back(app_context->current_line);
     app_context->current_line = NULL;
-    gtk_widget_queue_draw(widget);
+    gtk_widget_queue_draw(widget); 
     app_context->is_pressing = false;
 }
 
@@ -220,7 +220,19 @@ void on_draw(GtkWidget* widget, cairo_t* cairo, gpointer data){
     }
 }
 
+void undo(GtkWidget* widget){
+    if(app_context->shapes.empty()){
+      return;
+    }
+    delete app_context->shapes.back();
+    app_context->shapes.pop_back();
+    gtk_widget_queue_draw(widget); 
+}
+
 void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
+    GdkModifierType modifiers;
+
+    modifiers = gtk_accelerator_get_default_mod_mask ();
     switch(event->keyval){
     case GDK_KEY_G:
         app_context->line_color_name = "green";
@@ -252,10 +264,14 @@ void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
     case GDK_KEY_P:
         app_context->line_color_name = "pink";
         break;
+    case GDK_KEY_z:
+	if((event->state & modifiers) == GDK_CONTROL_MASK){
+	    undo(widget);
+	}
+        break;
     default:
         break;
     }
-    //cout << app_context->line_color_name << endl;
 }
 
 GtkWidget* transparent_window_new(){
@@ -298,6 +314,5 @@ int main(int argc, char **argv)
     gtk_widget_show_all(window);
     gtk_main();
     delete app_context;
-    cout << "exit app" << endl;
     return 0;
 }
