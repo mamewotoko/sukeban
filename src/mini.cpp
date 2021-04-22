@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include "img.h"
+#include "icon.h"
 #include <iostream>
 #include <list>
 #include <map>
@@ -69,19 +70,6 @@ public:
             gdk_rgba_parse(c, color_str);
             data[name] = c;
         }
-
-        // GdkRGBA* c = new GdkRGBA;
-        // //TODO: error check
-        // gdk_rgba_parse(c, "#FF0000");
-        // data["red"] = c;
-        // //TODO: error check
-        // c = new GdkRGBA;
-        // gdk_rgba_parse(c, "#00008D");
-        // data["navy"] = c;
-        // //TODO: error check
-        // c = new GdkRGBA;
-        // gdk_rgba_parse(c, "#00FF00");
-        // data["green"] = c;
     }
 
     ~color_pallet_t(){
@@ -103,9 +91,8 @@ public:
         this->line_width = line_width;
         this->is_demo = is_demo;
 
-        if(this->is_demo){
-            this->icon = gdk_pixbuf_new_from_inline(-1, suke_icon, FALSE, NULL);
-        }
+        this->icon = gdk_pixbuf_new_from_inline(-1, suke_icon, FALSE, NULL);
+        this->win_icon = gdk_pixbuf_new_from_inline(-1, suke_icon_mini, FALSE, NULL);
         current_line = NULL;
         line_color_name = "green";
         this->is_pressing = false;
@@ -120,6 +107,8 @@ public:
         }
         delete current_line;
         current_line = NULL;
+        g_object_unref(this->win_icon);
+        this->win_icon = NULL;
         g_object_unref(this->icon);
         this->icon = NULL;
     }
@@ -139,6 +128,7 @@ public:
     bool is_transparent;
     bool is_demo;
     GdkPixbuf* icon;
+    GdkPixbuf* win_icon;
     int line_width;
     string line_color_name;
     color_pallet_t* pallet;
@@ -186,7 +176,7 @@ void on_button_release(GtkWidget* widget, GdkEventButton* event){
     app_context->current_line->data.push_back(new point_t(event->x, event->y));
     app_context->shapes.push_back(app_context->current_line);
     app_context->current_line = NULL;
-    gtk_widget_queue_draw(widget);
+    gtk_widget_queue_draw(widget); 
     app_context->is_pressing = false;
 }
 
@@ -230,7 +220,19 @@ void on_draw(GtkWidget* widget, cairo_t* cairo, gpointer data){
     }
 }
 
+void undo(GtkWidget* widget){
+    if(app_context->shapes.empty()){
+      return;
+    }
+    delete app_context->shapes.back();
+    app_context->shapes.pop_back();
+    gtk_widget_queue_draw(widget); 
+}
+
 void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
+    GdkModifierType modifiers;
+
+    modifiers = gtk_accelerator_get_default_mod_mask ();
     switch(event->keyval){
     case GDK_KEY_G:
         app_context->line_color_name = "green";
@@ -262,16 +264,21 @@ void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
     case GDK_KEY_P:
         app_context->line_color_name = "pink";
         break;
+    case GDK_KEY_z:
+	if((event->state & modifiers) == GDK_CONTROL_MASK){
+	    undo(widget);
+	}
+        break;
     default:
         break;
     }
-    //cout << app_context->line_color_name << endl;
 }
 
 GtkWidget* transparent_window_new(){
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GdkScreen* screen = gtk_window_get_screen(GTK_WINDOW(window));
     GdkVisual* visual = gdk_screen_get_rgba_visual(screen);
+    gtk_window_set_icon(GTK_WINDOW(window), app_context->win_icon);
     gtk_widget_set_visual(window, visual);
     gtk_widget_set_app_paintable(window, TRUE);
     gtk_widget_set_size_request(window, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -307,6 +314,5 @@ int main(int argc, char **argv)
     gtk_widget_show_all(window);
     gtk_main();
     delete app_context;
-    cout << "exit app" << endl;
     return 0;
 }

@@ -16,13 +16,17 @@ include/img.h: image/suke_icon_500.png
 	mkdir -p include
 	gdk-pixbuf-csource --raw --name=suke_icon --static $< > $@
 
+include/icon.h: image/suke_icon.png
+	mkdir -p include
+	gdk-pixbuf-csource --raw --name=suke_icon_mini --static $< > $@
+
 TAGS:
 	find $(shell pkg-config --cflags-only-I gtk+-3.0 | sed s/-I//g) -name "*.h" | xargs etags
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(EXE): include/img.h $(OBJS)
+$(EXE): include/img.h include/icon.h $(OBJS)
 	$(CPP) $(OBJS) $(LDFLAGS) -o $(EXE)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
