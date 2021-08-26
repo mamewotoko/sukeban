@@ -1,4 +1,4 @@
-gtk_ohp_app
+Sukeban: gtk_ohp_app [![CI on Windows](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_win.yml/badge.svg)](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_win.yml)
 ====================
 
 Transparent window
