@@ -17,5 +17,6 @@ jobs:
           install: git mingw-w64-x86_64-toolchain
       - name: CI-Build
         run: |
+          set MSYSTEM=MINGW64
           bash setup.sh
-          make
+          msys2 -c make
