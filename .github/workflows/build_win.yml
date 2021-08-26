@@ -2,9 +2,6 @@ name: CI on Windows
 
 on: [push]
 
-name: Hello World
-on: [push, pull_request]
-
 jobs:
   build:
     runs-on: windows-latest
