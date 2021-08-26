@@ -35,6 +35,12 @@ Run
 ./mini
 ```
 
+TODO
+------
+
+* add CI on windows
+* support gtk4
+
 License
 --------
 
