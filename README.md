@@ -39,13 +39,12 @@ TODO
 ------
 
 * add CI on windows
-* support gtk4
 
 License
 --------
 
 ```
-   Copyright 2020 Takashi Masuyama
+   Copyright 2020-2021 Takashi Masuyama
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

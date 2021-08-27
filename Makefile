@@ -1,14 +1,15 @@
 
-CC = gcc
-CPP = g++ -Wno-deprecated -g
-SRC_DIR = src
-OBJ_DIR = target
-CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -I include
-LDFLAGS = $(shell pkg-config --libs gtk+-3.0)
-EXE = mini
+CC := gcc
+CPP := g++ -Wno-deprecated -g
+SRC_DIR := src
+OBJ_DIR := target
+GTK := gtk+-3.0
+CFLAGS := $(shell pkg-config --cflags $(GTK)) -Wall -I include
+LDFLAGS := $(shell pkg-config --libs $(GTK))
+EXE := mini
 
-SRCS = include/img.h $(SRC_DIR)/mini.cpp
-OBJS = $(OBJ_DIR)/mini.o
+SRCS := include/img.h $(SRC_DIR)/mini.cpp
+OBJS := $(OBJ_DIR)/mini.o
 
 all: $(EXE)
 
@@ -21,7 +22,7 @@ include/icon.h: image/suke_icon.png
 	gdk-pixbuf-csource --raw --name=suke_icon_mini --static $< > $@
 
 TAGS:
-	find $(shell pkg-config --cflags-only-I gtk+-3.0 | sed s/-I//g) -name "*.h" | xargs etags
+	find $(shell pkg-config --cflags-only-I $(GTK) | sed s/-I//g) -name "*.h" | xargs etags
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
