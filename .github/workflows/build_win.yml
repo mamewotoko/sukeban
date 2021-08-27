@@ -10,6 +10,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: ture
       - uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
