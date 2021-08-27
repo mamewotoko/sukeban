@@ -1,5 +1,9 @@
 #! /bin/bash
+set -x
+
 . ./env.sh
+
+echo $UNAME
 
 if [[ "$UNAME" = Darwin ]]; then
     brew update
