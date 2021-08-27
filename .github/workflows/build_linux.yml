@@ -1,0 +1,15 @@
+name: CI on Ubuntu
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: CI-Build
+        run: |
+          bash -x setup.sh
+          make
