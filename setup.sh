@@ -30,4 +30,5 @@ elif [[ "$UNAME" = "MSYS_NT"* ]]; then
 	   mingw-w64-clang-x86_64-gdk-pixbuf2 \
            mingw-w64-x86_64-gcc \
            mingw-w64-x86_64-pkg-config
+    # TODO; if CI_ENV is not github_action, install make
 fi

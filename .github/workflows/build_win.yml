@@ -18,5 +18,6 @@ jobs:
       - name: CI-Build
         run: |
           set MSYSTEM=MINGW64
+          set CI_ENV=github_action
           bash setup.sh
-          make
+          $msys make
