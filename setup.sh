@@ -22,14 +22,11 @@ elif [[ -f /etc/redhat-release ]] && grep "release 7" /etc/redhat-release; then
 elif [[ "$UNAME" = "MINGW64_NT"* ]]; then
     # msys2 on PC
     # github action
-    # TODO; if CI_ENV is not github_action, install make
     pacman -Syu --noconfirm
     pacman -Sy --noconfirm mingw-w64-x86_64-gtk3 \
            mingw-w64-x86_64-gcc \
            mingw-w64-x86_64-pkg-config \
 	   make
-    echo /usr/bin
-    ls /usr/bin
 elif [[ "$UNAME" = "MSYS_NT"* ]]; then
     # travis
     $msys2 pacman -Syu --noconfirm
