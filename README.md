@@ -35,11 +35,6 @@ Run
 ./sukeban
 ```
 
-TODO
-------
-
-* add CI on windows
-
 License
 --------
 
