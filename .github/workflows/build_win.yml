@@ -22,4 +22,4 @@ jobs:
           set MSYSTEM=MINGW64
           set CI_ENV=github_action
           bash -x setup.sh
-          make
+          $msys make
