@@ -26,11 +26,10 @@ elif [[ "$UNAME" = "MINGW64_NT"* ]]; then
     pacman -Syu --noconfirm
     pacman -Sy --noconfirm mingw-w64-x86_64-gtk3 \
            mingw-w64-x86_64-gcc \
-           mingw-w64-x86_64-pkg-config
+           mingw-w64-x86_64-pkg-config \
+	   make
     echo /usr/bin
     ls /usr/bin
-    echo /usr/local/bin
-    ls /usr/local/bin
 elif [[ "$UNAME" = "MSYS_NT"* ]]; then
     # travis
     $msys2 pacman -Syu --noconfirm
