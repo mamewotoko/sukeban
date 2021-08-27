@@ -32,7 +32,7 @@ Run
 ----
 
 ```
-./mini
+./sukeban
 ```
 
 TODO

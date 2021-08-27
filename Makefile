@@ -6,10 +6,10 @@ OBJ_DIR := target
 GTK := gtk+-3.0
 CFLAGS := $(shell pkg-config --cflags $(GTK)) -Wall -I include
 LDFLAGS := $(shell pkg-config --libs $(GTK))
-EXE := mini
+EXE := sukeban
 
-SRCS := include/img.h $(SRC_DIR)/mini.cpp
-OBJS := $(OBJ_DIR)/mini.o
+SRCS := include/img.h $(SRC_DIR)/main.cpp
+OBJS := $(OBJ_DIR)/main.o
 
 all: $(EXE)
 
