@@ -19,9 +19,4 @@ jobs:
         run: |
           set MSYSTEM=MINGW64
           bash setup.sh
-
-          echo /usr/bin
-          ls /usr/bin/
-          echo /usr/local/bin
-          ls /usr/local/bin/
-          bash -c make
+          make
