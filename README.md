@@ -20,7 +20,6 @@ install GTK
 sh setup.sh
 ```
 
-
 Build
 ------
 
