@@ -1,7 +1,7 @@
 Sukeban (a.k.a. gtk_ohp_app) [![CI on Windows](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_win.yml/badge.svg)](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_win.yml) [![CI on Mac](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_mac.yml/badge.svg)](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_mac.yml) [![CI on Ubuntu](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_linux.yml/badge.svg)](https://github.com/mamewotoko/gtk_ohp_app/actions/workflows/build_linux.yml)
 ====================
 
-Transparent window
+Sukeban (透板) is a drawable transparent window.
 
 ![](doc/sample.png)
 
