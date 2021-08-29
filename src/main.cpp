@@ -173,11 +173,15 @@ void on_button_release(GtkWidget* widget, GdkEventButton* event){
     if(event->button != 1){
         return;
     }
+        app_context->is_pressing = false;
+    //FIXME button release fired without button press when window is activated by mouse click
+    if(NULL == app_context->current_line){
+	return;
+    }
     app_context->current_line->data.push_back(new point_t(event->x, event->y));
     app_context->shapes.push_back(app_context->current_line);
     app_context->current_line = NULL;
-    gtk_widget_queue_draw(widget); 
-    app_context->is_pressing = false;
+    gtk_widget_queue_draw(widget);
 }
 
 void on_move(GtkWidget* widget, GdkEventMotion* event){
@@ -226,7 +230,7 @@ void undo(GtkWidget* widget){
     }
     delete app_context->shapes.back();
     app_context->shapes.pop_back();
-    gtk_widget_queue_draw(widget); 
+    gtk_widget_queue_draw(widget);
 }
 
 void on_key_press(GtkWidget* widget, GdkEventKey* event, gpointer user_data){
