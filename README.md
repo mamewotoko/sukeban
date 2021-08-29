@@ -11,7 +11,7 @@ Prepare
 clone this source
 
 ```
-git clone --recursive https://github.com/mamewotoko/gtk_ohp_app.git
+git clone --recursive https://github.com/mamewotoko/sukeban.git
 ```
 
 install GTK
