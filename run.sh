@@ -1,4 +1,4 @@
 #! /bin/bash
 . ./env.sh
 
-./mini
+./sukeban

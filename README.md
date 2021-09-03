@@ -3,7 +3,9 @@
 
 Sukeban (透板) is a drawable transparent window.
 
-![](doc/sample.png)
+<!-- ![](doc/sample.png) -->
+
+![](image/sukeban.gif)
 
 Prepare
 -------
@@ -16,21 +18,21 @@ git clone --recursive https://github.com/mamewotoko/sukeban.git
 
 install GTK
 
-```
-sh setup.sh
+```bash
+./setup.sh
 ```
 
 Build
 ------
 
-```
+```bash
 make
 ```
 
 Run
 ----
 
-```
+```bash
 ./sukeban
 ```
 
