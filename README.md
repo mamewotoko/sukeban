@@ -5,7 +5,7 @@ Sukeban (透板) is a drawable transparent window.
 
 <!-- ![](doc/sample.png) -->
 
-![](image/sukeban.gif)
+![](doc/sukeban.gif)
 
 Prepare
 -------
