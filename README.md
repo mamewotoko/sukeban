@@ -36,6 +36,13 @@ Run
 ./sukeban
 ```
 
+Similar Softwares
+-----------------
+
+* [mamewotoko/pygtk_ohp_app](https://github.com/mamewotoko/pygtk_ohp_app)
+  * python version
+
+
 License
 --------
 
