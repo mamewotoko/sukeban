@@ -12,7 +12,7 @@ Prepare
 
 clone this source
 
-```
+```bash
 git clone --recursive https://github.com/mamewotoko/sukeban.git
 ```
 
